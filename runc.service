@@ -7,7 +7,7 @@ NotifyAccess=all
 TimeoutStartSec=5
 ExecStart=/usr/local/sbin/runc run --pid-file /run/mycontainerid mycontainerid
 ExecStopPost=/usr/local/sbin/runc delete mycontainerid
-WorkingDirectory=/busybox
+WorkingDirectory=/fedora-runc
 
 [Install]
 WantedBy=multi-user.target
