@@ -25,10 +25,18 @@ if ! systemctl is-active docker >/dev/null; then
 fi
 
 setup
-docker build -t fedora_runc .
-containerID=$(docker create --name runc_container fedora_runc echo)
+# Let's not build the image `fed_runc` everytime we run this tool. Why?? 
+# (1) docker build process is time consuming. disk is cheap.
+# (2) `dnf install` fails sporadically due to fedora repo/mirror not available sometimes.
+#      If the mirror is not available it blows up the entire test.
+#      Error message: Failed to synchronize cache for repo 'fedora'.
+#      Reference: https://bugzilla.redhat.com/show_bug.cgi?id=1257034
+imageName=$(docker images --format "{{.Repository}}"|grep fed_runc)
+if [ "$imageName" != "fed_runc" ];then
+   docker build -t fed_runc .
+fi
+containerID=$(docker create fed_runc echo)
 docker export $containerID|tar -C /tmp/fedora-runc/rootfs -xf -
-echo $?
 systemctl daemon-reload
 systemctl start runc
 echo "runc_sd_notify completed successfully"
