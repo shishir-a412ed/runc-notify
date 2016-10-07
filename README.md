@@ -25,4 +25,7 @@
 
 ## Author
    Shishir Mahajan, 2016
+   
+## License
+GNU GPL
 
