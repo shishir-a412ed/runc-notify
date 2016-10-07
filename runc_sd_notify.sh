@@ -23,7 +23,7 @@ if ! systemctl is-active docker >/dev/null; then
      echo "Docker daemon is not running. Skipping test."
      exit 0
 fi
-
+trap cleanup EXIT
 setup
 # Let's not build the image `fed_runc` everytime we run this tool. Why?? 
 # (1) docker build process is time consuming. disk is cheap.
@@ -35,14 +35,25 @@ imageName=$(docker images --format "{{.Repository}}"|grep fed_runc)
 if [ "$imageName" != "fed_runc" ];then
    docker build -t fed_runc .
 fi
-containerID=$(docker create fed_runc echo)
+containerID=$(docker create --name fed_runc_container fed_runc echo)
 docker export $containerID|tar -C /tmp/fedora-runc/rootfs -xf -
 systemctl daemon-reload
 systemctl start runc
 echo "runc_sd_notify completed successfully"
 }
 
+cleanup(){
+systemctl stop runc
+rm -rf /tmp/fedora-runc
+rm /etc/system/system/runc.service 2>/dev/null
+docker rm fed_runc_container
+}
+
 setup(){
+if [ -f /etc/systemd/system/runc.service ];then
+   echo "/etc/systemd/system/runc.service already exists. Skipping test."
+   exit 0
+fi
 install -m 755 runc.service /etc/systemd/system
 mkdir -p /tmp/fedora-runc/rootfs
 cp config.json /tmp/fedora-runc
