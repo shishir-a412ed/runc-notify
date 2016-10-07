@@ -24,6 +24,18 @@ if ! systemctl is-active docker >/dev/null; then
      exit 0
 fi
 
+setup
+docker build -t fedora_runc .
+containerID=$(docker create --name runc_container fedora_runc echo)
+docker export $containerID|tar -C /tmp/fedora-runc/rootfs -xvf -
+echo "runc_sd_notify completed successfully"
+}
+
+setup(){
+install -m 755 runc.service /etc/systemd/system
+systemctl daemon-reload
+mkdir -p /tmp/fedora-runc/rootfs
+cp config.json /tmp/fedora-runc
 }
 
 main "$@"
