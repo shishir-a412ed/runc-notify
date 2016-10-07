@@ -41,23 +41,23 @@ fi
 containerID=$(docker create --name fed_runc_container fed_runc echo)
 docker export $containerID|tar -C /tmp/fed-runc/rootfs -xf -
 systemctl daemon-reload
-systemctl start runc
+systemctl start runc-notify
 echo "runc_sd_notify completed successfully"
 }
 
 cleanup(){
-systemctl stop runc
+systemctl stop runc-notify
 rm -rf /tmp/fed-runc
-rm /etc/system/system/runc.service 2>/dev/null
+rm /etc/systemd/system/runc-notify.service 2>/dev/null
 docker rm fed_runc_container
 }
 
 setup(){
-if [ -f /etc/systemd/system/runc.service ];then
-   echo "/etc/systemd/system/runc.service already exists. Skipping test."
+if [ -f /etc/systemd/system/runc-notify.service ];then
+   echo "/etc/systemd/system/runc-notify.service already exists. Skipping test."
    exit 0
 fi
-install -m 755 runc.service /etc/systemd/system
+install -m 755 runc-notify.service /etc/systemd/system
 mkdir -p /tmp/fed-runc/rootfs
 cp config.json /tmp/fed-runc
 }
