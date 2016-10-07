@@ -57,7 +57,7 @@ if [ -f /etc/systemd/system/runc-notify.service ];then
    echo "/etc/systemd/system/runc-notify.service already exists. Skipping test."
    exit 0
 fi
-install -m 755 runc-notify.service /etc/systemd/system
+install -m 755 systemd/runc-notify.service /etc/systemd/system
 mkdir -p /tmp/fed-runc/rootfs
 cp config.json /tmp/fed-runc
 }
