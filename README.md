@@ -9,7 +9,7 @@
 
 ## Dependencies
     
-   To run `runc_notify` you must have the following:
+   To run `runc-notify` you must have the following:
 
 	1) A linux distribution (OS) running systemd as init system.
 	2) docker daemon (running).
