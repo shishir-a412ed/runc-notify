@@ -5,8 +5,8 @@ Description=Start My Container
 Type=notify
 NotifyAccess=all
 TimeoutStartSec=5
-ExecStart=/usr/local/sbin/runc run --pid-file /run/mycontainerid mycontainerid
-ExecStopPost=/usr/local/sbin/runc delete mycontainerid
+ExecStart=/usr/bin/runc start --pid-file /run/mycontainerid mycontainerid
+ExecStopPost=/usr/bin/runc delete mycontainerid
 WorkingDirectory=/tmp/fed-runc
 
 [Install]
