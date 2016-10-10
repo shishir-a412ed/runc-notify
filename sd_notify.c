@@ -28,7 +28,9 @@ int main() {
 	if (signal(SIGTERM, sigdown) == SIG_ERR)
 		return 2;
 	signal(SIGKILL, sigdown);
-	sd_notify(0, "READY=1");
+        printf("got here, sock='%s'\n", getenv("NOTIFY_SOCKET"));
+	int ok = sd_notify(0, "READY=1");
+        printf("after sd_notify, status=%d\n", ok);
 	for (;;) pause();
 	fprintf(stderr, "error: infinite loop terminated\n");
 	return 42;

@@ -14,6 +14,7 @@
 			"/home/sd_notify"
 		],
 		"env": [
+                        "NOTIFY_SOCKET=/run/systemd/notify",
 			"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
 			"TERM=xterm"
 		],
@@ -111,7 +112,13 @@
 				"relatime",
 				"ro"
 			]
-		}
+		},
+                {
+                        "destination": "/run/systemd/notify",
+                        "type": "bind",
+                        "source": "/run/systemd/notify",
+                        "options": ["rbind"]
+                }
 	],
 	"hooks": {},
 	"linux": {
