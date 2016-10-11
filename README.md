@@ -15,7 +15,7 @@
 	2) docker daemon (running).
 		To check this execute: `systemctl status docker`.
 	3) docker client
-	4) runc installed in /usr/local/sbin/runc
+	4) runc installed in /usr/bin/runc
                 
 ## Run
 

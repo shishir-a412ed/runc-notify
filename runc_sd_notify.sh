@@ -34,12 +34,15 @@ setup
 imageName=$(docker images --format "{{.Repository}}"|grep fed_runc)
 if [ "$imageName" != "fed_runc" ];then
    echo "Building docker image fed_runc"
-   docker build -t fed_runc .
+   docker build -t fed_runc .|| exit 1
 else
    echo "docker image fed_runc already exists, skipping docker build"
 fi
-containerID=$(docker create --name fed_runc_container fed_runc echo)
-docker export $containerID|tar -C /tmp/fed-runc/rootfs -xf -
+
+set -e
+
+docker create --name fed_runc_container fed_runc echo
+docker export fed_runc_container|tar -C /tmp/fed-runc/rootfs -xf -
 systemctl daemon-reload
 systemctl start runc-notify
 echo "runc_sd_notify completed successfully"
@@ -49,6 +52,8 @@ cleanup(){
 systemctl stop runc-notify
 rm -rf /tmp/fed-runc
 rm /etc/systemd/system/runc-notify.service 2>/dev/null
+systemctl daemon-reload
+rm /run/mycontainerid 2>/dev/null
 docker rm fed_runc_container
 }
 
@@ -57,7 +62,7 @@ if [ -f /etc/systemd/system/runc-notify.service ];then
    echo "/etc/systemd/system/runc-notify.service already exists. Skipping test."
    exit 0
 fi
-install -m 755 systemd/runc-notify.service /etc/systemd/system
+install -m 644 systemd/runc-notify.service /etc/systemd/system
 mkdir -p /tmp/fed-runc/rootfs
 cp config.json /tmp/fed-runc
 }
