@@ -14,8 +14,8 @@
 	1) A linux distribution (OS) running systemd as init system.
 	2) docker daemon (running).
 		To check this execute: `systemctl status docker`.
-	3) docker client
-	4) runc installed in /usr/bin/runc
+	3) docker client.
+	4) runc installed in /usr/bin/runc and runc version > 1.0.0.rc1.
                 
 ## Run
 
